@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+import os
 import ConfigParser
 import csv
 import datetime as dt
@@ -19,7 +20,9 @@ logger = get_logger('winnower')
 reserved_ranges = IPSet(['0.0.0.0/8', '100.64.0.0/10', '127.0.0.0/8', '192.88.99.0/24',
                          '198.18.0.0/15', '198.51.100.0/24', '203.0.113.0/24', '233.252.0.0/24'])
 gi_org = SortedDict()
-geo_data = pygeoip.GeoIP('data/GeoIP.dat', pygeoip.MEMORY_CACHE)
+geo_ip_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/GeoIP.dat')
+geo_ip_num_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/GeoIPASNum2.csv')
+geo_data = pygeoip.GeoIP(geo_ip_path, pygeoip.MEMORY_CACHE)
 
 
 def load_gi_org(filename):
@@ -159,7 +162,7 @@ def winnow(in_file, out_file, enr_file):
 
     # TODO: make these locations configurable?
     logger.info('Loading GeoIP data')
-    gi_org = load_gi_org('data/GeoIPASNum2.csv')
+    gi_org = load_gi_org(geo_ip_num_path)
 
     wheat = []
     enriched = []
